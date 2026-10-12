@@ -1,0 +1,9 @@
+{
+  "name": "e2e-watch",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "tags": [],
+  "targets": {
+    "e2e": {},
+    "prepare-for-e2e": {}
+  }
+}

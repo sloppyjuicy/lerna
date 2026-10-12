@@ -1,0 +1,7 @@
+{
+  "name": "commands-create",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/commands/create/src",
+  "projectType": "library",
+  "tags": []
+}

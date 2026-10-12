@@ -1,0 +1,7 @@
+{
+  "name": "child-process",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/child-process/src",
+  "projectType": "library",
+  "tags": []
+}

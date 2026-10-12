@@ -1,0 +1,56 @@
+import { Package, log } from "@lerna/core";
+import { writeJsonFile } from "@nx/devkit";
+import { loadJsonFile } from "load-json-file";
+import path from "path";
+
+interface Lockfile {
+  version: string;
+  packages: {
+    [key: string]: {
+      version: string;
+      dependencies?: Record<string, string>;
+      devDependencies?: Record<string, string>;
+    };
+  };
+}
+
+// Updates npm's package-lock.json only. Bun lockfile updates are handled by running `bun install`
+// in the version command after package.json changes are written.
+export async function updateLockfileVersion(pkg: Package): Promise<string | void> {
+  const lockfilePath = path.join(pkg.location, "package-lock.json");
+
+  const obj = await loadJsonFile<Lockfile>(lockfilePath).catch(() => {
+    log.verbose("version", `${pkg.name} has no lockfile. Skipping lockfile update.`);
+  });
+
+  if (!obj) {
+    return;
+  }
+
+  obj.version = pkg.version;
+
+  if (obj.packages && obj.packages[""]) {
+    obj.packages[""].version = pkg.version;
+
+    if (obj.packages[""].dependencies) {
+      const updatedPkgDependencies = Object.keys(obj.packages[""].dependencies).reduce(
+        (prev, next) => ({ ...prev, [next]: pkg.dependencies?.[next] }),
+        {}
+      );
+      obj.packages[""].dependencies = updatedPkgDependencies;
+    }
+    if (obj.packages[""].devDependencies) {
+      const updatedPkgDevDependencies = Object.keys(obj.packages[""].devDependencies).reduce(
+        (prev, next) => ({ ...prev, [next]: pkg.devDependencies?.[next] }),
+        {}
+      );
+      obj.packages[""].devDependencies = updatedPkgDevDependencies;
+    }
+  }
+
+  writeJsonFile(lockfilePath, obj, {
+    spaces: 2,
+  });
+
+  return lockfilePath;
+}

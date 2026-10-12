@@ -1,14 +1,17 @@
 {
+  "$schema": "packages/lerna/schemas/lerna-schema.json",
+  "packages": [
+    "packages/lerna"
+  ],
   "command": {
     "create": {
       "homepage": "https://github.com/lerna/lerna",
       "license": "MIT"
     },
     "publish": {
-      "tempTag": true
+      "tempTag": false
     },
     "version": {
-      "allowBranch": "main",
       "conventionalCommits": true,
       "createRelease": "github",
       "exact": true,
@@ -20,6 +23,5 @@
     "**/__tests__/**",
     "**/*.md"
   ],
-  "useWorkspaces": true,
-  "version": "4.0.0"
+  "version": "10.1.1"
 }

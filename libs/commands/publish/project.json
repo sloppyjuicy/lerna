@@ -1,0 +1,7 @@
+{
+  "name": "commands-publish",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/commands/publish/src",
+  "projectType": "library",
+  "tags": []
+}

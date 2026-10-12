@@ -1,0 +1,7 @@
+{
+  "name": "commands-changed",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/commands/changed/src",
+  "projectType": "library",
+  "tags": []
+}

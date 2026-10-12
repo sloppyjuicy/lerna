@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "declaration": true,
+    "types": [],
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "noEmit": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["vitest.config.ts", "**/*.spec.ts"]
+}

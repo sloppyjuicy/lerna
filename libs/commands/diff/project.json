@@ -1,0 +1,7 @@
+{
+  "name": "commands-diff",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/commands/diff/src",
+  "projectType": "library",
+  "tags": []
+}

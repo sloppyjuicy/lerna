@@ -1,0 +1,12 @@
+# Ignore relevant files in fixtures, sometimes they are intentonally malformed
+**/__fixtures__/**/*.json
+**/__fixtures__/**/*.md
+
+# Renovate accepts JSON5 comments in renovate.json
+.github/renovate.json
+
+dist
+tmp
+/.nx/cache
+/.nx/workspace-data
+.nx/self-healing

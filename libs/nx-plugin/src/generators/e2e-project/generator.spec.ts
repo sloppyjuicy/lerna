@@ -1,0 +1,101 @@
+import { readJson, readProjectConfiguration, Tree } from "@nx/devkit";
+import { createTreeWithEmptyWorkspace } from "@nx/devkit/testing";
+
+import generator from "./generator";
+import { E2eProjectGeneratorSchema } from "./schema";
+
+describe("e2e-project generator", () => {
+  let appTree: Tree;
+  const options: E2eProjectGeneratorSchema = { name: "test" };
+
+  beforeEach(() => {
+    appTree = createTreeWithEmptyWorkspace();
+  });
+
+  it("should generate a new e2e project with appropriate config", async () => {
+    await generator(appTree, options);
+    const config = readProjectConfiguration(appTree, "e2e-test");
+    expect(config).toMatchInlineSnapshot(`
+      Object {
+        "$schema": "../../node_modules/nx/schemas/project-schema.json",
+        "name": "e2e-test",
+        "projectType": "library",
+        "root": "e2e/test",
+        "sourceRoot": "e2e/test/src",
+        "tags": Array [],
+        "targets": Object {
+          "e2e": Object {
+            "executor": "nx:run-commands",
+            "options": Object {
+              "commands": Array [
+                Object {
+                  "command": "npm run e2e-start-local-registry",
+                },
+                Object {
+                  "command": "npm run e2e-build-package-publish",
+                },
+                Object {
+                  "command": "E2E_ROOT=$(node tools/scripts/set-e2e-root.ts) nx run-e2e-tests e2e-test",
+                },
+              ],
+              "parallel": false,
+            },
+          },
+          "run-e2e-tests-process": Object {
+            "executor": "nx:run-commands",
+            "options": Object {
+              "commands": Array [
+                Object {
+                  "command": "E2E_ROOT=$(node tools/scripts/set-e2e-root.ts) nx run-e2e-tests e2e-test",
+                  "description": "This additional wrapper target exists so that we can ensure that the e2e tests run in a dedicated process with enough memory",
+                },
+              ],
+              "parallel": false,
+            },
+          },
+        },
+      }
+    `);
+
+    expect(readJson(appTree, "e2e/test/tsconfig.spec.json")).toMatchInlineSnapshot(`
+      Object {
+        "compilerOptions": Object {
+          "module": "commonjs",
+          "outDir": "../../dist/out-tsc",
+          "types": Array [
+            "vitest/globals",
+            "node",
+          ],
+        },
+        "extends": "./tsconfig.json",
+        "include": Array [
+          "vitest.config.ts",
+          "src/**/*.test.ts",
+          "src/**/*.spec.ts",
+          "src/**/*.d.ts",
+          "src/test-setup.ts",
+        ],
+      }
+    `);
+
+    expect(appTree.read("e2e/test/vitest.config.ts").toString()).toMatchInlineSnapshot(`
+      "import { defineConfig } from 'vitest/config';
+      import { defineLernaE2eVitestConfig } from '../../vitest.shared';
+
+      export default defineConfig(
+        defineLernaE2eVitestConfig({
+          projectRoot: 'e2e/test',
+        }),
+      );
+      "
+    `);
+
+    expect(appTree.exists("e2e/test/jest.config.cts")).toBe(false);
+    expect(appTree.exists("e2e/test/jest.config.ts")).toBe(false);
+
+    expect(appTree.read("e2e/test/src/test-setup.ts").toString()).toMatchInlineSnapshot(`
+      "// Runs before each test e2e test file (configured via the shared e2e vitest config)
+      "
+    `);
+  });
+});

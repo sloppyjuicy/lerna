@@ -1,0 +1,7 @@
+{
+  "name": "commands-import",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/commands/import/src",
+  "projectType": "library",
+  "tags": []
+}
